@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Breakup Recovery Phase Assessment</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: linear-gradient(
+          135deg,
+          #0f0f23 0%,
+          #1a1a2e 50%,
+          #16213e 100%
+        );
+        color: #e2e8f0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      .container {
+        background: rgba(15, 15, 35, 0.95);
+        border-radius: 24px;
+        padding: 40px;
+        max-width: 520px;
+        width: 100%;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+      }
+
+      .progress-bar {
+        height: 4px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 2px;
+        margin-bottom: 35px;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+        width: 0%;
+        transition: 0.4s;
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 10px;
+        font-size: 1.9rem;
+      }
+
+      .subtitle {
+        text-align: center;
+        color: #94a3b8;
+        margin-bottom: 35px;
+      }
+
+      .question {
+        font-size: 1.15rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+      }
+
+      .option {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 14px 18px;
+        margin-bottom: 12px;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      .option:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .option.selected {
+        background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+        border-color: #60a5fa;
+        color: white;
+      }
+
+      .nav-buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 25px;
+      }
+
+      .nav-btn {
+        flex: 1;
+        padding: 10px;
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+
+      .nav-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .result {
+        text-align: center;
+        padding: 20px;
+      }
+
+      .score {
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 15px;
+      }
+
+      .cta-button {
+        background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+        border: none;
+        padding: 14px;
+        border-radius: 10px;
+        color: white;
+        width: 100%;
+        margin-top: 25px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+
+      <h1>Breakup Recovery Phase Assessment</h1>
+      <p class="subtitle">Get your personalized recovery phase score</p>
+
+      <div id="quizContainer"></div>
+
+      <div class="nav-buttons">
+        <button class="nav-btn" id="prevBtn" onclick="changeQuestion(-1)">
+          Previous
+        </button>
+        <button class="nav-btn" id="nextBtn" onclick="changeQuestion(1)">
+          Next
+        </button>
+      </div>
+    </div>
+
+    <script>
+      const questions = [
+        {
+          text: "Who ended the relationship?",
+          options: [
+            "She ended suddenly during emotional argument",
+            "Mutual but mostly her decision",
+            "I ended it impulsively",
+            "She left for another serious relationship",
+          ],
+          scores: [3, 2, 1, 0],
+        },
+        {
+          text: "Current communication status?",
+          options: [
+            "Not blocked, just distant",
+            "Blocked recently (within 30 days)",
+            "Blocked but sometimes unblocks",
+            "Blocked everywhere for 4+ months",
+          ],
+          scores: [3, 2, 1, 0],
+        },
+        {
+          text: "Is she in a new relationship?",
+          options: [
+            "No",
+            "Not sure",
+            "Casual talking",
+            "Committed relationship",
+          ],
+          scores: [3, 2, 1, 0],
+        },
+        {
+          text: "Length of relationship?",
+          options: [
+            "1+ year",
+            "6–12 months",
+            "3–6 months",
+            "Less than 3 months",
+          ],
+          scores: [3, 2, 1, 0],
+        },
+        {
+          text: "Your behavior after breakup?",
+          options: [
+            "Maintained calm no contact",
+            "Contacted few times",
+            "Begged emotionally",
+            "Public drama or harassment",
+          ],
+          scores: [3, 2, 1, 0],
+        },
+        {
+          text: "Did she unblock you?",
+          options: [
+            "Yes multiple times",
+            "Once",
+            "No",
+            "Changed number completely",
+          ],
+          scores: [3, 2, 1, 0],
+        },
+        {
+          text: "Time since breakup?",
+          options: [
+            "Less than 1 month",
+            "1–3 months",
+            "3–6 months",
+            "More than 6 months",
+          ],
+          scores: [3, 2, 1, 0],
+        },
+      ];
+
+      let currentQuestion = 0;
+      let answers = new Array(questions.length).fill(null);
+
+      const quizContainer = document.getElementById("quizContainer");
+      const progressFill = document.getElementById("progressFill");
+      const prevBtn = document.getElementById("prevBtn");
+      const nextBtn = document.getElementById("nextBtn");
+
+      function renderQuestion() {
+        const q = questions[currentQuestion];
+        quizContainer.innerHTML = `
+<div class="question">${q.text}</div>
+${q.options.map((opt, i) => `<div class="option" onclick="selectOption(${i})">${opt}</div>`).join("")}
+`;
+
+        updateProgress();
+        updateNav();
+      }
+
+      function selectOption(index) {
+        document.querySelectorAll(".option").forEach((opt, i) => {
+          opt.classList.toggle("selected", i === index);
+        });
+        answers[currentQuestion] = questions[currentQuestion].scores[index];
+      }
+
+      function updateProgress() {
+        progressFill.style.width =
+          (currentQuestion / questions.length) * 100 + "%";
+      }
+
+      function updateNav() {
+        prevBtn.disabled = currentQuestion === 0;
+      }
+
+      function changeQuestion(direction) {
+        if (direction === 1 && answers[currentQuestion] === null) return;
+
+        if (direction === 1 && currentQuestion === questions.length - 1) {
+          showResults();
+          return;
+        }
+
+        currentQuestion += direction;
+        renderQuestion();
+      }
+
+      function showResults() {
+        const total = answers.reduce((a, b) => a + (b || 0), 0);
+
+        // Check only last question (Time since breakup)
+        const lastAnswerScore = answers[6]; // Question 7
+
+        let title,
+          message,
+          buttonHTML = "";
+
+        // If 6+ months selected (score = 0)
+        if (lastAnswerScore === 0) {
+          title = "Emotional Reset Phase";
+          message =
+            "Since it has been more than 6 months since the breakup, direct reconnection strategy is not recommended. The focus should now be emotional rebuilding and moving forward.";
+          buttonHTML = `
+<button class="cta-button" onclick="location.reload()">
+Focus On Moving Forward
+</button>
+`;
+        } else if (total >= 16) {
+          title = "High Recovery Phase";
+          message =
+            "Your situation shows strong emotional reversibility. You are eligible to follow a structured reconnection strategy.";
+          buttonHTML = `
+<button class="cta-button" onclick="window.location.href='https://superprofile.bio/course/4e529f28-e9a2-4f5b-8abe-2ee53b32f168'">
+Access Full Strategy Blueprint
+</button>
+`;
+        } else if (total >= 9) {
+          title = "Moderate Recovery Phase";
+          message =
+            "Your situation has recovery potential. With the correct timing and emotional control strategy, reconnection is possible.";
+          buttonHTML = `
+<button class="cta-button" onclick="window.location.href='https://superprofile.bio/course/4e529f28-e9a2-4f5b-8abe-2ee53b32f168'">
+Access Full Strategy Blueprint
+</button>
+`;
+        } else {
+          title = "Emotional Reset Phase";
+          message =
+            "Based on your answers, reconnection strategy is not recommended right now. Focus on rebuilding emotional control first.";
+          buttonHTML = `
+<button class="cta-button" onclick="location.reload()">
+Focus On Self Reset
+</button>
+`;
+        }
+
+        quizContainer.innerHTML = `
+<div class="result">
+<div class="score">${total}/21</div>
+<h2>${title}</h2>
+<p>${message}</p>
+${buttonHTML}
+</div>
+`;
+
+        document.querySelector(".nav-buttons").style.display = "none";
+        progressFill.style.width = "100%";
+      }
+
+      renderQuestion();
+    </script>
+  </body>
+</html>
